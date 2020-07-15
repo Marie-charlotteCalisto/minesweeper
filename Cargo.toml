@@ -1,0 +1,7 @@
+[package]
+name = "minesweeper"
+version = "0.1.0"
+authors = ["Macha <charlotte.calisto@free.fr>"]
+edition = "2018"
+
+[dependencies]
