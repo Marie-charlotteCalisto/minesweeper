@@ -5,3 +5,4 @@ authors = ["Macha <charlotte.calisto@free.fr>"]
 edition = "2018"
 
 [dependencies]
+rand = "0.7"
