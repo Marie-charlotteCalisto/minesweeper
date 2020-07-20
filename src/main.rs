@@ -33,7 +33,7 @@ fn main()
 {
     let nb_bomb = get_bomb_number();
 
-    let board : board::Board = board::Board::create_board(nb_bomb);
+    let board = board::Board::create(nb_bomb);
 
     board::Board::print_board(board);
 }
