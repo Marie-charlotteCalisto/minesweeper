@@ -86,13 +86,12 @@ impl Board
         for i in 0..self.height {
             for j in 0..self.width {
                 let val = self.board[i * self.width + j];
+                let color = (val * 20) as u8;
+                let background = Colour::Fixed(240);
                 match val{
-                    -1 => print!(" {}", Colour::Red.paint("X")),
-                    1 => print!(" {}", Colour::Blue.paint(val.to_string())),
-                    2 => print!(" {}", Colour::Yellow.paint(val.to_string())),
-                    3 => print!(" {}", Colour::Green.paint(val.to_string())),
-                    4 => print!(" {}", Colour::Cyan.paint(val.to_string())),
-                    v => print!(" {}", v),
+                    -1 => print!("{}", Colour::Fixed(124).on(background).paint(" X")),
+                    0 => print!("{}", Colour::Fixed(250).on(background).paint(" 0")),
+                    _ => print!("{}", Colour::Fixed(color).on(background).paint(format!(" {}", val.to_string()))),
                 }
 
             }
