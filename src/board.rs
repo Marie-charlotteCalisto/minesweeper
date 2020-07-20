@@ -9,8 +9,13 @@ pub struct Board {
 
 impl Board
 {
-    pub fn create_board(mut nb_bomb : i32, h : usize, w : usize) -> Board
+
+
+    pub fn create_board(mut nb_bomb : i32) -> Board
     {
+        let h = Board::get_height(nb_bomb);
+        let w = Board::get_width(nb_bomb);
+        println!("the board is of size : {:?} {:?}", h, w);
         let size = h*w;
         let mut new_board : Vec<usize> = Vec::with_capacity(size);
         let mut rng = rand::thread_rng();
@@ -38,7 +43,17 @@ impl Board
             width : w,
         }
     }
+    fn get_width(nb_bomb : i32) -> usize
+    {
+        let width = nb_bomb as usize;
+        width * 30 / 100
+    }
 
+    fn get_height(nb_bomb : i32) -> usize
+    {
+        let width = nb_bomb as usize;
+        width * 16 / 100
+    }
     pub fn print_board(self)
     {
 

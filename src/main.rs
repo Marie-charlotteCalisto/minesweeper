@@ -1,4 +1,3 @@
-mod utils;
 mod board;
 
 fn get_bomb_number() -> i32
@@ -33,11 +32,8 @@ fn get_bomb_number() -> i32
 fn main()
 {
     let nb_bomb = get_bomb_number();
-    let width = utils::get_width(nb_bomb);
-    let height = utils::get_height(nb_bomb);
-    println!("the board is of size : {:?} {:?}", height, width);
 
-    let board : board::Board = board::Board::create_board(nb_bomb, height, width);
+    let board : board::Board = board::Board::create_board(nb_bomb);
 
     board::Board::print_board(board);
 }
