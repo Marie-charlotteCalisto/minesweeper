@@ -1,39 +1,35 @@
-mod board;
+use std::path;
 
-fn get_bomb_number() -> i32
-{
-    let mut bomb = String::new();
-    let mut nb_bomb : i32;
-    loop
-    {
-        println!("How many bombs do you want to play with ?");
-        if std::io::stdin().read_line(&mut bomb).is_err() {
-            println!("error: error read_line" );
-            continue;
-        }
+use ggez::{ContextBuilder, GameResult};
+use ggez::event;
 
-        bomb.pop();
-        nb_bomb = match bomb.parse::<i32>()
-        {
-            Ok(n) => n,
-            Err(_e) => -1,
-        };
-        if nb_bomb < 0 {
-            println!("Not a valid number.");
-            bomb = String::new();
-            continue;
-        }
-        break;
+mod my_game;
+
+const DEFAULT_BOMB_NUMBER : u32 = 100;
+const DEFAULT_BOARD_SIZE : (usize, usize) = (30, 16);
+const DEFAULT_TILE_SIZE : (usize, usize) = (32, 32);
+const DEFAULT_SCREEN_SIZE : (f32, f32) = (
+    (DEFAULT_BOARD_SIZE.0 as f32)* (DEFAULT_TILE_SIZE.0 as f32),
+    (DEFAULT_BOARD_SIZE.1 as f32)* (DEFAULT_TILE_SIZE.1 as f32)
+    );
+
+
+
+fn main() -> GameResult {
+    let resource_dir = path::PathBuf::from("./resources");
+
+    let (ctx, events_loop) = ContextBuilder::new("minesweeper", "macha")
+        .add_resource_path(resource_dir)
+        .window_setup(ggez::conf::WindowSetup::default().title("minesweeper").vsync(false))
+        .window_mode(ggez::conf::WindowMode::default().dimensions(DEFAULT_SCREEN_SIZE.0, DEFAULT_SCREEN_SIZE.1))
+        .build()?;
+
+    let mut my_game = MyGame::new(&mut ctx)?;
+
+    match event::run(&mut ctx, &mut events_loop, &mut my_game) {
+        Ok(_) => println!("Exited cleanly."),
+        Err(e) => println!("Error occured : {}", e)
     }
-    nb_bomb
-}
 
-
-fn main()
-{
-    let nb_bomb = get_bomb_number();
-
-    let board = board::Board::create(nb_bomb);
-
-    board::Board::print_board(board);
+    Ok(())
 }
