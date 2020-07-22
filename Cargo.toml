@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 rand = "0.7"
 ansi_term = "0.12"
+ggez = "0.5.1"
