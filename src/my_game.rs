@@ -1,30 +1,29 @@
 use rand::distributions::{Distribution, Uniform};
 
-use ggez::{GameResult, Context};
-use ggez::graphics;
+use ggez::{graphics, GameResult, Context};
 
 use super::DEFAULT_BOMB_NUMBER;
 use super::DEFAULT_BOARD_SIZE;
 
 #[derive(Eq, PartialEq)]
-enum Tile {
+pub enum Tile {
     Bomb,
     Hint(u32),
 }
 
 
-struct MyGame {
+pub struct MyGame {
     nb_bomb : u32,
-    board : Vec<Tile>,
+    pub board : Vec<Tile>,
 
-    spritebatch : graphics::spritebatch::SpriteBatch,
+    pub spritebatch : graphics::spritebatch::SpriteBatch,
 }
 
 impl MyGame {
 
-    fn new(ctx : &mut Context) -> GameResult<MyGame> {
+    pub fn new(ctx : &mut Context) -> GameResult<MyGame> {
         let textures = graphics::Image::new(ctx, "/textures.png")?;
-        let mut new_board = init_board();
+        let new_board = init_board();
 
         Ok(
             MyGame {
@@ -62,28 +61,28 @@ fn init_board() -> Vec<Tile> {
         board[pos_rand_height * DEFAULT_BOARD_SIZE.0 + pos_rand_height] = Tile::Bomb;
         let pos_width = pos_rand_width as i32;
         let pos_height = pos_rand_height as i32;
-        add_hint(&board, pos_width, pos_height + 1);
-        add_hint(&board, pos_width, pos_height - 1);
-        add_hint(&board, pos_width - 1, pos_height);
-        add_hint(&board, pos_width - 1, pos_height + 1);
-        add_hint(&board, pos_width - 1, pos_height - 1);
-        add_hint(&board, pos_width + 1, pos_height);
-        add_hint(&board, pos_width + 1, pos_height + 1);
-        add_hint(&board, pos_width + 1, pos_height - 1);
+        add_hint(&mut board, pos_width, pos_height + 1);
+        add_hint(&mut board, pos_width, pos_height - 1);
+        add_hint(&mut board, pos_width - 1, pos_height);
+        add_hint(&mut board, pos_width - 1, pos_height + 1);
+        add_hint(&mut board, pos_width - 1, pos_height - 1);
+        add_hint(&mut board, pos_width + 1, pos_height);
+        add_hint(&mut board, pos_width + 1, pos_height + 1);
+        add_hint(&mut board, pos_width + 1, pos_height - 1);
 
     };
 
     board
 }
 
-fn add_hint( board : &Vec<Tile>, i : i32, j : i32){
+fn add_hint(board : &mut Vec<Tile>, i : i32, j : i32){
     if i < 0 || j < 0 {
         return
     }
 
     let index_width = i as usize;
     let index_height = j as usize;
-    if index_width >= DEFAULT_BOARD_SIZE.0 || index_width >= DEFAULT_BOARD_SIZE.1{
+    if index_width >= DEFAULT_BOARD_SIZE.0 || index_height >= DEFAULT_BOARD_SIZE.1{
         return
     }
     let pos = index_height * DEFAULT_BOARD_SIZE.0 + index_width;
