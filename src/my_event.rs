@@ -16,21 +16,21 @@ impl event::EventHandler for MyGame {
     fn draw(&mut self, ctx : &mut Context) -> GameResult<()> {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        for i in 0..DEFAULT_BOARD_SIZE.0 {
-            for j in 0..DEFAULT_BOARD_SIZE.1 {
+        for i in 0..DEFAULT_BOARD_SIZE.1 {
+            for j in 0..DEFAULT_BOARD_SIZE.0 {
                 let i_float = i as f32;
                 let j_float = j as f32;
 
-                let p = match self.board[i * DEFAULT_BOARD_SIZE.1 + j] {
+                let p = match self.board[i * DEFAULT_BOARD_SIZE.0 + j] {
                     Tile::Bomb => {
                         graphics::DrawParam::new()
                             .src(Rect::new(2. / 8., 0. / 8., 1. / 8., 1. / 8.))
-                            .dest(Point2::new(i_float * (DEFAULT_TILE_SIZE.0 as f32), j_float * (DEFAULT_TILE_SIZE.1 as f32)))
+                            .dest(Point2::new(j_float * (DEFAULT_TILE_SIZE.0 as f32), i_float * (DEFAULT_TILE_SIZE.1 as f32)))
                     },
                     Tile::Hint(hint) => {
                         graphics::DrawParam::new()
                             .src(Rect::new(((hint % 2) as f32)/ 8., ((hint / 2) as f32) / 8., 1. / 8., 1. / 8.))
-                            .dest(Point2::new(i_float * (DEFAULT_TILE_SIZE.0 as f32), j_float * (DEFAULT_TILE_SIZE.1 as f32)))
+                            .dest(Point2::new(j_float * (DEFAULT_TILE_SIZE.0 as f32), i_float * (DEFAULT_TILE_SIZE.1 as f32)))
                     }
                 };
 

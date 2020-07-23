@@ -1,11 +1,11 @@
 use rand::distributions::{Distribution, Uniform};
 
 use ggez::{graphics, GameResult, Context};
-
+use ansi_term::Colour;
 use super::DEFAULT_BOMB_NUMBER;
 use super::DEFAULT_BOARD_SIZE;
 
-#[derive(Eq, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum Tile {
     Bomb,
     Hint(u32),
@@ -58,20 +58,21 @@ fn init_board() -> Vec<Tile> {
             pos_rand_height = range_height.sample(&mut rng);
         }
 
-        board[pos_rand_height * DEFAULT_BOARD_SIZE.0 + pos_rand_height] = Tile::Bomb;
+        board[pos_rand_height * DEFAULT_BOARD_SIZE.0 + pos_rand_width] = Tile::Bomb;
         let pos_width = pos_rand_width as i32;
         let pos_height = pos_rand_height as i32;
-        add_hint(&mut board, pos_width, pos_height + 1);
-        add_hint(&mut board, pos_width, pos_height - 1);
-        add_hint(&mut board, pos_width - 1, pos_height);
-        add_hint(&mut board, pos_width - 1, pos_height + 1);
-        add_hint(&mut board, pos_width - 1, pos_height - 1);
-        add_hint(&mut board, pos_width + 1, pos_height);
-        add_hint(&mut board, pos_width + 1, pos_height + 1);
-        add_hint(&mut board, pos_width + 1, pos_height - 1);
+        add_hint(&mut board, pos_height, pos_width + 1);
+        add_hint(&mut board, pos_height, pos_width - 1);
+        add_hint(&mut board, pos_height - 1, pos_width);
+        add_hint(&mut board, pos_height - 1, pos_width + 1);
+        add_hint(&mut board, pos_height - 1, pos_width - 1);
+        add_hint(&mut board, pos_height + 1, pos_width);
+        add_hint(&mut board, pos_height + 1, pos_width + 1);
+        add_hint(&mut board, pos_height + 1, pos_width - 1);
 
     };
 
+    debug_print_board(&mut board);
     board
 }
 
@@ -80,8 +81,8 @@ fn add_hint(board : &mut Vec<Tile>, i : i32, j : i32){
         return
     }
 
-    let index_width = i as usize;
-    let index_height = j as usize;
+    let index_height = i as usize;
+    let index_width = j as usize;
     if index_width >= DEFAULT_BOARD_SIZE.0 || index_height >= DEFAULT_BOARD_SIZE.1{
         return
     }
@@ -93,4 +94,24 @@ fn add_hint(board : &mut Vec<Tile>, i : i32, j : i32){
         };
 }
 
+pub fn debug_print_board(board : &mut Vec<Tile>)
+    {
+        for i in 0..DEFAULT_BOARD_SIZE.1 {
+            for j in 0..DEFAULT_BOARD_SIZE.0 {
+                let val = board[i * DEFAULT_BOARD_SIZE.0 + j];
+                let v = match val{
+                    Tile::Hint(h) => h,
+                    _ => 0,
+                };
+                let color = (v * 20) as u8;
+                let background = Colour::Fixed(240);
+                match val{
+                    Tile::Bomb => print!("{}", Colour::Fixed(124).on(background).paint(" X")),
+                    Tile::Hint(0) => print!("{}", Colour::Fixed(250).on(background).paint(" 0")),
+                    _ => print!("{}", Colour::Fixed(color).on(background).paint(format!(" {}", v.to_string()))),
+                }
 
+            }
+            println!();
+        }
+    }
