@@ -1,4 +1,3 @@
-use crate::default;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum TileType {
@@ -36,7 +35,7 @@ impl Tile {
         self.is_flagged = flagged;
     }
 
-    pub fn has_been_discovered(&mut self) {
+    pub fn set_discovered(&mut self) {
         self.is_discovered = true;
     }
 
@@ -54,6 +53,10 @@ impl Tile {
             TileType::Hint(hint) => hint,
             _ => 0,
         }
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.get_hint() == 0
     }
 
     pub fn get_tile_type(&self) -> TileType{
