@@ -10,6 +10,7 @@ pub struct Board {
     board : Vec<tile::Tile>,
     width : usize,
     height : usize,
+    tiles_completed : usize,
 }
 
 impl Board {
@@ -36,24 +37,34 @@ impl Board {
         self.height
     }
 
+    pub fn is_completed(&self) -> bool{
+        self.tiles_completed == self.width * self.height
+    }
+
+    pub fn get_tile_completed(&self) -> usize{
+        self.tiles_completed
+    }
 
     pub fn check_index_for_rec(&self, row : i32, col : i32) -> bool{
         if row < 0 || col < 0
             || row >= self.height as i32 || col >= self.width as i32{
                 false
-            }else if self.get(row as usize, col as usize).is_empty(){
-                true
-            }else {
+            }else if self.get(row as usize, col as usize).is_bomb()
+             || ! self.get(row as usize, col as usize).is_empty(){
                 false
+             }else{
+                true
             }
     }
 
     pub fn tile_set_discovered(&mut self, row : usize, col : usize){
 
-        let tile = self.get_mut(row, col);
-        if tile.is_flagged() || tile.is_discovered(){
+        let tile_ = self.get(row, col);
+        if tile_.is_flagged() || tile_.is_discovered(){
             return;
         }
+        self.tiles_completed += 1;
+        let tile = self.get_mut(row, col);
         tile.set_discovered();
 
         if tile.is_empty(){
@@ -63,8 +74,6 @@ impl Board {
                     if offset_row == offset_col{
                         continue 'col;
                     }
-
-                    println!("i {} - j{}", offset_row, offset_col);
 
                     let new_row = row as i32 + offset_row;
                     let new_col = col as i32 + offset_col;
@@ -80,8 +89,13 @@ impl Board {
     pub fn tile_set_flagged(&mut self, row : usize, col : usize){
         let tile = self.get_mut(row, col);
         if tile.is_discovered() == false {
-            println!("toto");
-            tile.set_flag(!tile.is_flagged());
+            if tile.is_flagged() {
+                tile.set_flag(false);
+                self.tiles_completed -= 1;
+            }else {
+                tile.set_flag(true);
+                self.tiles_completed += 1;
+            }
         }
     }
 
@@ -92,6 +106,7 @@ impl Board {
             board,
             height : default::BOARD_SIZE.1,
             width : default::BOARD_SIZE.0,
+            tiles_completed : 0,
         }
     }
 
