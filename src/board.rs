@@ -39,7 +39,9 @@ impl Board {
 
     pub fn tile_has_been_discovered(&mut self, row : usize, col : usize){
         let mut tile = self.get_mut(row, col);
-        tile.has_been_discovered();
+        if tile.is_flagged() == false {
+            tile.has_been_discovered();
+        }
 
     }
 
