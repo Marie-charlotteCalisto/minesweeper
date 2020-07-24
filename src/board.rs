@@ -49,8 +49,7 @@ impl Board {
         if row < 0 || col < 0
             || row >= self.height as i32 || col >= self.width as i32{
                 false
-            }else if self.get(row as usize, col as usize).is_bomb()
-             || ! self.get(row as usize, col as usize).is_empty(){
+            }else if self.get(row as usize, col as usize).is_bomb(){
                 false
              }else{
                 true
@@ -71,7 +70,7 @@ impl Board {
             '_row: for offset_row in -1..=1 {
                 'col: for offset_col in -1..=1{
 
-                    if offset_row == offset_col{
+                    if offset_row == 0 && offset_row == offset_col{
                         continue 'col;
                     }
 
