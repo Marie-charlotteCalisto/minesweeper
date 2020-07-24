@@ -72,8 +72,8 @@ impl event::EventHandler for MyGame {
 
 
         match button {
-            MouseButton::Right => self.board.tile_has_been_flagged(i, j),
-            MouseButton::Left => self.board.tile_has_been_discovered(i, j),
+            MouseButton::Right => self.board.tile_set_flagged(i, j),
+            MouseButton::Left => self.board.tile_set_discovered(i, j),
             _ => print!("Not handled"),
         };
     }
