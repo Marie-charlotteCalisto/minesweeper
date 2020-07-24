@@ -37,16 +37,48 @@ impl Board {
     }
 
 
-    pub fn tile_has_been_discovered(&mut self, row : usize, col : usize){
-        let mut tile = self.get_mut(row, col);
-        if tile.is_flagged() == false {
-            tile.has_been_discovered();
+    pub fn check_index_for_rec(&self, row : i32, col : i32) -> bool{
+        if row < 0 || col < 0
+            || row >= self.height as i32 || col >= self.width as i32{
+                false
+            }else if self.get(row as usize, col as usize).is_empty(){
+                true
+            }else {
+                false
+            }
+    }
+
+    pub fn tile_set_discovered(&mut self, row : usize, col : usize){
+
+        let tile = self.get_mut(row, col);
+        if tile.is_flagged() || tile.is_discovered(){
+            return;
+        }
+        tile.set_discovered();
+
+        if tile.is_empty(){
+            '_row: for offset_row in -1..=1 {
+                'col: for offset_col in -1..=1{
+
+                    if offset_row == offset_col{
+                        continue 'col;
+                    }
+
+                    println!("i {} - j{}", offset_row, offset_col);
+
+                    let new_row = row as i32 + offset_row;
+                    let new_col = col as i32 + offset_col;
+                    if self.check_index_for_rec(new_row, new_col){
+                        self.tile_set_discovered(new_row as usize, new_col as usize);
+                    }
+                }
+            }
         }
 
     }
 
-    pub fn tile_has_been_flagged(&mut self, row : usize, col : usize){
-        let mut tile = self.get_mut(row, col);
+    pub fn tile_set_flagged(&mut self, row : usize, col : usize){
+        let tile = self.get_mut(row, col);
         if tile.is_discovered() == false {
             println!("toto");
             tile.set_flag(!tile.is_flagged());
