@@ -23,14 +23,15 @@ impl event::EventHandler for MyGame {
                 let tile = self.board.get(j, i);
                 let p =
                     if !tile.is_discovered(){
-                        graphics::DrawParam::new()
-                            .src(Rect::new(2. / 8., 2. / 8., 1. / 8., 1. / 8.))
-                            .dest(Point2::new((i * default::TILE_SIZE.0) as f32, (j * default::TILE_SIZE.1) as f32))
-                    }
-                    else if tile.is_flagged(){
-                        graphics::DrawParam::new()
-                            .src(Rect::new(2. / 8., 1. / 8., 1. / 8., 1. / 8.))
-                            .dest(Point2::new((i * default::TILE_SIZE.0) as f32, (j * default::TILE_SIZE.1) as f32))
+                        if tile.is_flagged(){
+                            graphics::DrawParam::new()
+                                .src(Rect::new(2. / 8., 1. / 8., 1. / 8., 1. / 8.))
+                                .dest(Point2::new((i * default::TILE_SIZE.0) as f32, (j * default::TILE_SIZE.1) as f32))
+                        }else{
+                            graphics::DrawParam::new()
+                                .src(Rect::new(2. / 8., 2. / 8., 1. / 8., 1. / 8.))
+                                .dest(Point2::new((i * default::TILE_SIZE.0) as f32, (j * default::TILE_SIZE.1) as f32))
+                        }
                     }
 
                     else {
