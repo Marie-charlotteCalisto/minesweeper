@@ -3,7 +3,6 @@ use ggez::{graphics, GameResult, Context};
 
 use crate::default;
 use crate::board;
-use crate::tile;
 
 pub struct MyGame {
     _nb_bomb : u32,
