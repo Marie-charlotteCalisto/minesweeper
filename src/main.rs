@@ -3,6 +3,7 @@ mod my_event;
 mod default;
 mod tile;
 mod board;
+mod config_board;
 
 use std::path;
 

@@ -5,40 +5,59 @@ use ggez::GameResult;
 
 use crate::tile;
 use crate::default;
+use crate::config_board::{Difficulty, Config};
 
 pub struct Board {
     board : Vec<tile::Tile>,
-    width : usize,
-    height : usize,
+    config : Config,
     tiles_completed : usize,
 }
 
 impl Board {
     pub fn get(&self, row : usize, col: usize) -> &tile::Tile{
-        &self.board[row * self.width + col]
+        &self.board[row * self.config.get_width() + col]
     }
 
     pub fn get_mut(&mut self, row : usize, col: usize) -> &mut tile::Tile{
-        &mut self.board[row * self.width + col]
+        &mut self.board[row * self.config.get_width() + col]
     }
-
-
-
 
     pub fn set(&mut self, row : usize, col : usize, tile : tile::Tile) {
-        self.board[row * self.width + col] = tile;
+        self.board[row * self.config.get_width() + col] = tile;
     }
 
+    pub fn set_difficulty(&mut self, diff :Difficulty){
+        match diff {
+            Difficulty::EASY => self.config.set_config(20, (15, 8)),
+            Difficulty::MEDIUM => self.config.set_config(50, (30, 16)),
+            Difficulty::HARD => self.config.set_config(100, (30, 16)),
+        }
+    }
+
+
     pub fn get_width(&self) -> usize{
-        self.width
+        self.config.get_width()
     }
 
     pub fn get_height(&self) -> usize{
-        self.height
+        self.config.get_height()
     }
 
+    pub fn get_bomb_number(&self) -> u32{
+        self.config.get_bomb_number()
+    }
+
+    pub fn get_tile_size(&self) -> (usize, usize){
+        self.config.get_tile_size()
+    }
+
+    pub fn get_screen_size(&self) -> (f32, f32){
+        self.config.get_screen_size()
+    }
+
+
     pub fn is_completed(&self) -> bool{
-        self.tiles_completed == self.width * self.height
+        self.tiles_completed == self.get_width() * self.get_height()
     }
 
     pub fn get_tile_completed(&self) -> usize{
@@ -47,7 +66,7 @@ impl Board {
 
     pub fn check_index_for_rec(&self, row : i32, col : i32) -> bool{
         if row < 0 || col < 0
-            || row >= self.height as i32 || col >= self.width as i32{
+            || row >= self.get_height() as i32 || col >= self.get_width() as i32{
                 false
             }else if self.get(row as usize, col as usize).is_bomb(){
                 false
@@ -103,8 +122,7 @@ impl Board {
 
         Board{
             board,
-            height : default::BOARD_SIZE.1,
-            width : default::BOARD_SIZE.0,
+            config : Config::new(),
             tiles_completed : 0,
         }
     }
@@ -113,12 +131,12 @@ impl Board {
         let mut board = Self::new();
 
         let mut rng = rand::thread_rng();
-        let range_col = Uniform::from(0..board.width);
-        let range_row = Uniform::from(0..board.height);
+        let range_col = Uniform::from(0..board.get_width());
+        let range_row = Uniform::from(0..board.get_height());
 
 
 
-        for _ in 0..default::BOMB_NUMBER{
+        for _ in 0..board.get_bomb_number(){
             let mut pos_rand_row = range_row.sample(&mut rng);
             let mut pos_rand_col = range_col.sample(&mut rng);
 
@@ -158,7 +176,7 @@ impl Board {
 
         let row = i as usize;
         let col = j as usize;
-        if row >= self.height || col >= self.width {
+        if row >= self.get_height() || col >= self.get_width() {
             return
         }
         self.get_mut(row, col).add_hint();
@@ -166,8 +184,8 @@ impl Board {
 
     pub fn debug_print_board(&self)
     {
-        for i in 0..self.height {
-            for j in 0..self.width {
+        for i in 0..self.get_height() {
+            for j in 0..self.get_width() {
                 let val = self.get(i, j);
                 let v = val.get_hint();
                 let color = (v * 20) as u8;
