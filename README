@@ -1,0 +1,10 @@
+the project use crates that are not stable so you must use rust nightly:
+
+```
+rustup override nightly
+```
+
+to run:
+```
+cargo run
+```

@@ -16,18 +16,15 @@ use my_game::MyGame;
 fn main() -> GameResult {
     let resource_dir = path::PathBuf::from("./resources");
 
-    let (ctx, events_loop) = &mut ContextBuilder::new("minesweeper", "macha")
+    let (mut ctx, events_loop) = ContextBuilder::new("minesweeper", "macha")
         .add_resource_path(resource_dir)
         .window_setup(ggez::conf::WindowSetup::default().title("minesweeper").vsync(false))
         .window_mode(ggez::conf::WindowMode::default().dimensions(default::SCREEN_SIZE.0, default::SCREEN_SIZE.1))
         .build()?;
 
-    let my_game = &mut MyGame::new(ctx)?;
+    let my_game = MyGame::new(&mut ctx)?;
 
-    match event::run(ctx, events_loop, my_game) {
-        Ok(_) => println!("Exited cleanly."),
-        Err(e) => println!("Error occured : {}", e)
-    }
+    event::run(ctx, events_loop, my_game);
 
     Ok(())
 }

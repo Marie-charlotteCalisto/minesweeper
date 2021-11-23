@@ -1,5 +1,5 @@
-use ggez::nalgebra::{Point2};
 use ggez::graphics::{self, Rect};
+use cgmath::Point2;
 use ggez::{GameResult, Context};
 
 use crate::board;
